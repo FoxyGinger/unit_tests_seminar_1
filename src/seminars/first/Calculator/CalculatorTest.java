@@ -53,25 +53,23 @@ public class CalculatorTest {
         System.out.println(Calculator.calculation(2_147_483_647, 1, '+')); // integer overflow
         System.out.println(Calculator.squareRootExtraction(169));
 
-        // Примерные решения домашних заданий из 1 лекции:
+        // Проверка функционала расчета суммы покупки с учетом скидки, с использованием утверждений AssertJ:
+        assertThat(Calculator.calculateDiscount(1000.0, 30)).isEqualTo(700.0);
+        assertThat(Calculator.calculateDiscount(1000.0, 0)).isEqualTo(1000.0);
+        assertThat(Calculator.calculateDiscount(1000.0, 100)).isEqualTo(0.0);
 
-        // HW1.1: Придумайте и опишите (можно в псевдокоде) функцию извлечения корня и
-        // необходимые проверки для него используя граничные случаи
-        // assertThatThrownBy(() ->
-        //         seminars.first.Calculator.Calculator.squareRootExtraction(0, 1, -1)
-        // ).isInstanceOf(SomeStateException.class);
-
-        // HW1.2: Как будет выглядеть проверка для случая деления на ноль? (с использованием AssertJ)
-        // assertThatThrownBy(() ->
-        //        seminars.first.Calculator.Calculator.calculation(5, 0, '/')
-        // ).isInstanceOf(ArithmeticException.class);
-
-        // HW1.3: Сравните одну и ту же проверку с использованием условий, ассертов, AssertJ
-        // в каком случае стандартное сообщение об ошибке будет более информативным?
-        // if (0 != seminars.first.Calculator.Calculator.calculation(2, 6, '+')) {
-        //     throw new AssertionError("Ошибка в методе");
-        // }
-        //   assert 0 == seminars.first.Calculator.Calculator.calculation(2, 6, '+');
-        //    assertThat(seminars.first.Calculator.Calculator.calculation(2, 6, '+')).isEqualTo(0);
+        // Проверка ожидаемого исключения, с использованием утверждений AssertJ:
+        // Purchase amount should not be less than 0
+        assertThatThrownBy(() ->
+                Calculator.calculateDiscount(-100, 10)
+        ).isInstanceOf(ArithmeticException.class);
+        // Discount percent should not be less than 0%
+        assertThatThrownBy(() ->
+                Calculator.calculateDiscount(100, -10)
+        ).isInstanceOf(ArithmeticException.class);
+        // Discount percent should not be greater than 100%
+        assertThatThrownBy(() ->
+                Calculator.calculateDiscount(100, 110)
+        ).isInstanceOf(ArithmeticException.class);
     }
 }
