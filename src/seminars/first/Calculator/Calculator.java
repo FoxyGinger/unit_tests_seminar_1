@@ -1,6 +1,32 @@
 package seminars.first.Calculator;
 
+import java.util.Scanner;
+
 public class Calculator {
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static char getOperator() {
+        System.out.println("Enter operation: ");
+        return scanner.next().charAt(0);
+    }
+
+    public static int getOperand() {
+        System.out.println("Enter operand: ");
+        int operand;
+        if (scanner.hasNextInt()) {
+            operand = scanner.nextInt();
+        } else {
+            System.out.println("You have mistaken, try again");
+            if (scanner.hasNext()) {
+                scanner.next();
+                operand = getOperand();
+            } else {
+                throw new IllegalStateException("Input error");
+            }
+        }
+        return operand;
+    }
+
     public static int calculation(int firstOperand, int secondOperand, char operator) {
         int result;
 
@@ -29,32 +55,68 @@ public class Calculator {
 
     // HW1.1: Придумайте и опишите (можно в псевдокоде) функцию извлечения корня и
     // необходимые проверки для него используя граничные случаи
-    public static double squareRootExtraction(double num) {
+    public static double squareRootExtraction(double number) {
+
         //  0
         //  Отрицательные числа
         //  Дробные значения корней
         //  Целые
-            if(num < 0) {
-                throw new IllegalArgumentException("Cannot calculate square root of a negative number");
-            }
-            return Math.sqrt(num);
+
+        double t;
+        double squareRoot = number / 2;
+        do {
+            t = squareRoot;
+            squareRoot = (t + (number / t)) / 2;
+        }
+        while ((t - squareRoot) != 0);
+        return squareRoot;
+
+        // или просто return Math.sqrt(number);
     }
 
     // Нужно написать в калькуляторе метод вычисления суммы покупки со скидкой и проверить его, используя AssertJ
     // Примерная сигнатура и тело метода:
-    public static double calculateDiscount(double purchaseAmount, int discountPercent) {
+    public static double calculatingDiscount(double purchaseAmount, int discountAmount) {
         // purchaseAmount - сумма покупки
-        // discountPercent - размер скидки в процентах
-        if (purchaseAmount < 0) {
-            throw new ArithmeticException("Purchase amount should not be less than 0");
-        }
-        if (discountPercent < 0) {
-            throw new ArithmeticException("Discount percent should not be less than 0%");
-        }
-        if (discountPercent > 100) {
-            throw new ArithmeticException("Discount percent should not be greater than 100%");
+        // discountAmount - размер скидки
+
+        double discountedAmount = 0; // Сумма со скидкой (первоначальная сумма - скидка%)
+
+        if (purchaseAmount >= 0) {
+
+            if (discountAmount >= 0 && discountAmount <= 100) {
+                discountedAmount = purchaseAmount - (purchaseAmount * discountAmount) / 100;
+            } else {
+                throw new ArithmeticException("Скидка должна быть в диапазоне от 0 до 100%");
+            }
+
+        } else {
+            // Сумма покупки не может быть отрицательной
+            throw new ArithmeticException("Сумма покупки не может быть отрицательной");
         }
 
-        return Math.round(purchaseAmount * ((100 - discountPercent) / 100f));
+        return discountedAmount; // Метод должен возвращать сумму покупки со скидкой
+    }
+
+    //HW2.3L: Добавьте функцию возведения в степень в калькулятор и протестируйте
+    public static int pow(int value, int powValue) {
+        int result = 1;
+
+        for (int a = 1; a <= powValue; a++) {
+            if (a == 0) return 1;
+            result = result * value;
+
+        }
+        return result;
+    }
+
+    public double computeAreaCircle(double radius) {
+        return Math.PI * radius * radius;
+    }
+
+    //HW3.1L: Попробуйте реализовать в калькуляторе с помощью методологии TDD (с описанием шагов) функцию расчета длины окружности
+    // P=2πR
+    public double computeLengthCircle(int r) {
+        return 2*Math.PI*r;
     }
 }
